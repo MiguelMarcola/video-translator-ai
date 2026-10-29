@@ -1,0 +1,14 @@
+[project]
+name = "media-worker"
+version = "0.1.0"
+description = "Processamento local de midia, transcricao e traducao de legendas"
+requires-python = ">=3.12"
+dependencies = [
+  "faster-whisper==1.2.1",
+  "argostranslate==1.11.0",
+  "yt-dlp==2026.10.26",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,32 @@
+{
+  "name": "@video-translate/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "12.3.2",
+    "@nestjs/core": "12.3.2",
+    "@nestjs/platform-express": "12.3.2",
+    "@prisma/adapter-pg": "7.10.1",
+    "@video-translate/contracts": "workspace:*",
+    "@video-translate/database": "workspace:*",
+    "@video-translate/storage": "workspace:*",
+    "dotenv": "18.0.9",
+    "openai": "7.45.1",
+    "pino": "10.4.0",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "12.0.11",
+    "@types/express": "5.0.6",
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3"
+  }
+}

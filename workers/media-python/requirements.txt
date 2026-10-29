@@ -1,0 +1,5 @@
+faster-whisper==1.2.1
+av>=11,<19
+argostranslate==1.11.0
+yt-dlp==2026.10.26
+pytest==8.4.2

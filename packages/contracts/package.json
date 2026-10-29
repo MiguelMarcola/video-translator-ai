@@ -1,0 +1,37 @@
+{
+  "name": "@video-translate/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime-config.d.ts",
+      "import": "./dist/runtime-config.js",
+      "default": "./dist/runtime-config.js"
+    },
+    "./idempotency": {
+      "types": "./dist/idempotency.d.ts",
+      "import": "./dist/idempotency.js",
+      "default": "./dist/idempotency.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  }
+}

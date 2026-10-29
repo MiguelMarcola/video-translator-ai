@@ -1,0 +1,20 @@
+{
+  "name": "video-translate",
+  "private": true,
+  "packageManager": "pnpm@10.18.2",
+  "engines": {
+    "node": ">=24"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@prisma/engines", "esbuild", "msgpackr-extract", "prisma"]
+  },
+  "scripts": {
+    "build": "pnpm --filter @video-translate/contracts build && pnpm --filter @video-translate/storage build && pnpm --filter @video-translate/database build && pnpm --filter @video-translate/api build && pnpm --filter @video-translate/worker build && pnpm --filter @video-translate/web build",
+    "test": "pnpm --filter @video-translate/contracts test && pnpm --filter @video-translate/web test && ./workers/media-python/.venv/bin/pytest workers/media-python/tests -q",
+    "infra": "docker compose -f infra/docker-compose.yml up -d",
+    "dev:api": "pnpm --filter @video-translate/api dev",
+    "dev:worker": "pnpm --filter @video-translate/worker dev",
+    "dev:web": "pnpm --filter @video-translate/web dev",
+    "prove:media": "PYTHONPATH=workers/media-python workers/media-python/.venv/bin/python -m media_worker prove --input var/local-media/sample.mp4 --work var/prove --cache .cache"
+  }
+}

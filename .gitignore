@@ -1,0 +1,16 @@
+node_modules
+dist
+.venv
+.cache
+var
+.env
+apps/**/src/generated
+packages/**/src/generated
+__pycache__
+.pytest_cache
+*.pyc
+playwright-report
+test-results
+coverage
+*.tsbuildinfo
+.DS_Store

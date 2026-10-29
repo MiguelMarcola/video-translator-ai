@@ -1,0 +1,31 @@
+{
+  "name": "@video-translate/database",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/client.js",
+  "types": "./dist/client.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "default": "./dist/client.js"
+    }
+  },
+  "scripts": {
+    "generate": "prisma generate",
+    "build": "prisma generate && tsc -p tsconfig.json",
+    "migrate": "prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "7.10.1",
+    "@prisma/adapter-pg": "7.10.1",
+    "dotenv": "18.0.9",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "prisma": "7.10.1",
+    "typescript": "5.9.3",
+    "@types/pg": "8.23.1"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@video-translate/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false src/main.ts",
+    "start": "node dist/main.js",
+    "build": "tsc -p tsconfig.json",
+    "local-file": "tsx src/local-file.ts"
+  },
+  "dependencies": {
+    "@video-translate/contracts": "workspace:*",
+    "@video-translate/database": "workspace:*",
+    "@video-translate/storage": "workspace:*",
+    "bullmq": "6.5.0",
+    "dotenv": "18.0.9",
+    "ioredis": "5.11.1",
+    "openai": "7.45.1",
+    "pino": "10.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String       @id @default(uuid())
+  externalId  String       @unique
+  displayName String
+  createdAt   DateTime     @default(now())
+  videos      Video[]
+  usageEvents UsageEvent[]
+}
+
+model Video {
+  id                  String             @id @default(uuid())
+  ownerId             String
+  owner               User               @relation(fields: [ownerId], references: [id])
+  sourceKind          String
+  sourceUrl           String?
+  sourceVideoId       String?
+  internalSourcePath  String?
+  title               String?
+  durationMs          Int?
+  targetLanguage      String
+  detectedLanguage    String?
+  status              String
+  currentStage        String?
+  expiresAt           DateTime
+  deletedAt           DateTime?
+  deletionRequestedAt DateTime?
+  playbackReady       Boolean            @default(false)
+  subtitlesReady      Boolean            @default(false)
+  summaryStatus       String             @default("pending")
+  chatStatus          String             @default("pending")
+  failureCode         String?
+  failureMessage      String?
+  version             Int                @default(1)
+  idempotencyKey      String?
+  requestFingerprint  String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  jobs                ProcessingJob[]
+  segments            TranscriptSegment[]
+  artifacts           Artifact[]
+  summaries           Summary[]
+  chunks              TranscriptChunk[]
+  conversations       Conversation[]
+  usageEvents         UsageEvent[]
+  outboxEvents        OutboxEvent[]
+
+  @@unique([ownerId, idempotencyKey])
+  @@index([ownerId, createdAt])
+  @@index([status, expiresAt])
+}
+
+model ProcessingJob {
+  id           String    @id @default(uuid())
+  videoId      String
+  video        Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  stage        String
+  version      Int
+  status       String
+  attempt      Int       @default(0)
+  maxAttempts  Int       @default(3)
+  errorCode    String?
+  errorMessage String?
+  failureClass String?
+  workerPid    Int?
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([videoId, stage, version])
+  @@index([status, updatedAt])
+}
+
+model TranscriptSegment {
+  id             String @id @default(uuid())
+  publicId       String
+  videoId        String
+  video          Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  version        Int
+  position       Int
+  startMs        Int
+  endMs          Int
+  originalText   String
+  translatedText String?
+  sourceLanguage String?
+  targetLanguage String?
+
+  @@unique([videoId, version, publicId])
+  @@unique([videoId, version, position])
+  @@index([videoId, version])
+}
+
+model Artifact {
+  id          String   @id @default(uuid())
+  videoId     String
+  video       Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  kind        String
+  version     Int
+  objectKey   String
+  contentType String
+  byteSize    Int
+  createdAt   DateTime @default(now())
+
+  @@unique([videoId, kind, version])
+}
+
+model Summary {
+  id          String   @id @default(uuid())
+  videoId     String
+  video       Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  version     Int
+  language    String
+  overview    String
+  topics      Json
+  conclusions Json
+  model       String
+  status      String
+  createdAt   DateTime @default(now())
+
+  @@unique([videoId, version])
+}
+
+model TranscriptChunk {
+  id             String                      @id @default(uuid())
+  videoId        String
+  video          Video                       @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  version        Int
+  position       Int
+  startMs        Int
+  endMs          Int
+  text           String
+  segmentIds     String[]
+  embeddingModel String
+  embedding      Unsupported("vector(1536)")?
+
+  @@unique([videoId, version, position])
+  @@index([videoId, version])
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  videoId   String
+  video     Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  ownerId   String
+  createdAt DateTime  @default(now())
+  messages  Message[]
+
+  @@unique([videoId, ownerId])
+}
+
+model Message {
+  id               String       @id @default(uuid())
+  conversationId   String
+  conversation     Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role             String
+  content          String
+  status           String
+  clientMessageId  String?
+  replyToMessageId String?
+  segmentRefs      Json?
+  model            String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([conversationId, clientMessageId])
+  @@index([conversationId, createdAt])
+}
+
+model UsageEvent {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  videoId   String?
+  video     Video?   @relation(fields: [videoId], references: [id], onDelete: SetNull)
+  eventType String
+  metadata  Json
+  createdAt DateTime @default(now())
+
+  @@index([videoId, eventType])
+}
+
+model OutboxEvent {
+  id          String    @id @default(uuid())
+  videoId     String
+  video       Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  stage       String
+  version     Int
+  queueName   String
+  status      String
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([status, createdAt])
+}
